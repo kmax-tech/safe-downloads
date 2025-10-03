@@ -29,8 +29,8 @@ services:
       - .env
     volumes:
       - shared-quarantine:/app/shared-data
-    ports: 
-    - "5000:5000"
+    # ports: 
+    # - "5000:5000"
     networks:
       - sandbox-network
     restart: unless-stopped
@@ -40,6 +40,7 @@ services:
     container_name: caddy
     ports:
       - "80:80"
+      - "443:443"  # add HTTPS
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

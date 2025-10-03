@@ -3,6 +3,7 @@
   email you@example.com
 }
 
+# alternativ
 # firefox.localhost:80 {
 #   basicauth {
 #     user $2a$14$J42SwWvOiNNB/XYQdVORGelcRPF5SNId1IaLV8KvhBssnf2cobnvy.
@@ -19,9 +20,9 @@
 
 
 
-# Not working because of different routes
+https://localhost {
+  tls internal
 
-:80 {
   basicauth {
     user $2a$14$J42SwWvOiNNB/XYQdVORGelcRPF5SNId1IaLV8KvhBssnf2cobnvy.
   }
@@ -52,4 +53,5 @@ handle @app_root {
   handle /app/* {
     reverse_proxy flask-app:5000 
 
+}
 }

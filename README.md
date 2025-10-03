@@ -54,3 +54,9 @@ To bring down and restart the sandbox manually:
 docker compose -p safe-browsing down --volumes --remove-orphans
 docker compose -p safe-browsing -f docker-compose.sandbox.yml up -d
 ```
+
+
+Caddy Password can be created with
+```bash
+: docker exec -it caddy  caddy hash-password --plaintext "<Password>"
+```

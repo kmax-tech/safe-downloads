@@ -6,4 +6,5 @@ __pycache__
 *.pyc 
 shared_quarantine
 shared-quarantine
+.python-version
 transfer.sh

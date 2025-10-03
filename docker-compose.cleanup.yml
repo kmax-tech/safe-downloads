@@ -9,7 +9,7 @@ services:
       TARGET_PROJECT: "safe-browsing"
       TARGET_PROJECT_YAML: "docker-compose.sandbox.yml"
       HOST_PROJECT_DIR: ${HOST_PROJECT_DIR}
-      CRON_SCHEDULE: ${CRON_SCHEDULE:-* * * * *}
+      CRON_SCHEDULE: ${CRON_SCHEDULE:-0 2 * * *}
       COMPOSE_PROJECT_NAME: "safe-browsing-cleanup"
       PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     # Compose will convert $$ → $, then the shell will expand $VAR here.
