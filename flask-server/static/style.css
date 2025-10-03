@@ -1,0 +1,45 @@
+body { font-family: sans-serif; margin: 2rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd; padding: .5rem; }
+th { text-align: left; }
+.actions { margin-top: 1rem; }
+.msg { color: #444; margin-bottom: .75rem; }
+.warn { color: #b55; }
+.ok { color: #2d7; font-weight: bold; }
+.bad { color: #d33; font-weight: bold; }
+.muted { color: #777; }
+.footer { margin-top: 2rem; font-size: .9rem; }
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #555;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-right: .5rem;
+  vertical-align: -2px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.toolbar .zip-btn {
+  padding: .4rem .7rem;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  border-radius: 6px;
+}
+.toolbar .zip-btn:hover {
+  background: #f7f7f7;
+}

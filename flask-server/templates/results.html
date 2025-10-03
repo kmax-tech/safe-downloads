@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Scan Results</title>
+  <link rel="stylesheet" href="{{ url_for('main.static', filename='style.css') }}">
+  <!-- HTMX for incremental updates -->
+  <script src="{{ url_for('main.static', filename='htmx.min.js') }}"></script>
+</head>
+<body>
+  <h1>VirusTotal Results</h1>
+
+ <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Status</th>
+        <th>Stats (harmless / undetected / suspicious / malicious)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for scan_record in scan_record_list %}
+        {% set vt_info = scan_record.scan %}
+
+        {% if not vt_info %}
+          <!-- Auto-scan placeholder file_info for selected files without a status -->
+          <tr class="pending-row"
+              hx-post="{{ url_for('main.scan_one') }}"
+              hx-vals='{{ {"id": scan_record.id}|tojson }}'
+              hx-trigger="load once"
+              hx-target="this"
+              hx-swap="outerHTML">
+            <td>{{ scan_record.name }}</td>
+            <td colspan="2"><span class="spinner"></span> Scanning…</td>
+          </tr>
+        {% else %}
+          {# If you already have a status, render a final row #}
+          {% include "partials/scan_result.html" %}
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p><a href="{{ url_for('main.index') }}">Back to file list</a></p>
+
+
+
+</body>
+</html>

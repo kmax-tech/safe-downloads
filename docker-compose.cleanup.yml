@@ -1,0 +1,32 @@
+services:
+  reset:
+    image: docker:cli
+    working_dir: ${HOST_PROJECT_DIR}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOST_PROJECT_DIR}:${HOST_PROJECT_DIR}:ro
+    environment:
+      TARGET_PROJECT: "safe-browsing"
+      TARGET_PROJECT_YAML: "docker-compose.sandbox.yml"
+      HOST_PROJECT_DIR: ${HOST_PROJECT_DIR}
+      CRON_SCHEDULE: ${CRON_SCHEDULE:-* * * * *}
+      COMPOSE_PROJECT_NAME: "safe-browsing-cleanup"
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    # Compose will convert $$ → $, then the shell will expand $VAR here.
+    command: >
+      sh -lc '
+        set -e
+        CRON_LINE="$$CRON_SCHEDULE cd \"$$HOST_PROJECT_DIR\" && docker compose -p \"$$TARGET_PROJECT\" down --volumes --remove-orphans && docker compose -p \"$$TARGET_PROJECT\" -f \"$$TARGET_PROJECT_YAML\" up -d"
+
+        # Log the exact cron line (append)
+        printf "%s\n" "$$CRON_LINE" | tee -a /var/log/cron_command.log >/dev/null
+
+        # Install the crontab (requires newline)
+        printf "%s\n" "$$CRON_LINE" | crontab -
+
+        # Optional: show what got installed (helps debugging)
+        crontab -l
+
+        # Run cron in foreground and log to stdout
+        exec crond -f -L /dev/stdout
+      '

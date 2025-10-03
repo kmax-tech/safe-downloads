@@ -1,0 +1,46 @@
+
+{% set vt_info= scan_record.scan %}
+
+<tr>
+  <!-- Col 1: Name -->
+  <td>
+      {{ scan_record.name }}
+  </td>
+
+  <!-- Col 2: Status (Error / Clean / Blocked) -->
+<td>
+  {% if vt_info %}
+    {% if vt_info.verdict_clean %}
+      <!-- Case: clean -->
+      <span class="ok">Clean</span>
+    {% else %}
+      <!-- not clean = considered blocked -->
+      <span class="bad">Blocked</span>
+    {% endif %}
+  {% else %}
+    <!-- no scan info -->
+    <span class="muted">—</span>
+  {% endif %}
+</td>
+
+  <!-- Col 3: Details (harmless / undetected / suspicious / malicious) -->
+  <td>
+    {% if vt_info and vt_info.details %}
+      {{ vt_info.details.harmless }} /
+      {{ vt_info.details.undetected }} /
+      {{ vt_info.details.suspicious }} /
+      {{ vt_info.details.malicious }}
+    {% else %}
+      <span class="muted">—</span>
+    {% endif %}
+  </td>
+
+  <!-- Col 4: Message (always rendered separately) -->
+  <td>
+    {% if scan_record.message %}
+      {{ scan_record.message|e }}
+    {% else %}
+      <span class="muted">—</span>
+    {% endif %}
+  </td>
+</tr>

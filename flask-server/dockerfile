@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+# Add entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 5000
+ENV PYTHONUNBUFFERED=1
+
+# Default args for both modes (override via env)
+ENV BIND=0.0.0.0:5000
+ENV WORKERS=1
+# If your module is named app.py and Flask app is "app"
+ENV APP_IMPORT="app:app"
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Safe File Scanner</title>
+  <link rel="stylesheet" href="{{ url_for('main.static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Files in {{ base_dir }}</h1>
+
+  {% if scan_record_list %}
+  <form method="post" action="{{ url_for('main.start_scan') }}"> 
+    <table>
+      <thead>
+        <tr><th>Select</th><th>Name</th><th>Size</th><th>Status</th><th>Download</th></tr>
+      </thead>
+      <tbody>
+      {% for scan_record in scan_record_list %}
+        {% set vt_info= scan_record.scan %}
+        <tr>
+          <td>
+            <input type="checkbox" name="files" value="{{ scan_record.id }}" checked>
+          </td>
+          <td>{{ scan_record.name }}</td>
+          <td>{{ scan_record.path.stat().st_size }} bytes</td>
+          <td>
+          {% if not vt_info or not vt_info.processed%}
+            Not Analyzed  
+          {% elif vt_info.verdict_clean is true %}
+            ✅ clean
+          {% elif vt_info.verdict_clean is false %}
+            ❌ Malicious
+          {% endif %}
+          </td>
+          <td>
+          {% if vt_info.verdict_clean is true and  vt_info.processed%}
+            <a href="{{ url_for('main.download', h=scan_record.id) }}">Download</a>
+          {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  <div class="actions" style="margin-top:1rem;">
+    <button type="submit"
+            formaction="{{ url_for('main.start_scan') }}"
+            formmethod="post">
+      Scan selected with VirusTotal
+    </button>
+
+    <button type="submit"
+            formaction="{{ url_for('main.delete_files') }}"
+            formmethod="post"
+            onclick="return confirm('Delete all selected files?')">
+      Delete selected
+    </button>
+  </div>
+  </form>
+  {% else %}
+  <p>No files found.</p>
+  {% endif %}
+
+  <p style="margin-top:1rem;">
+  <a href="{{ web_service_url }}" target="_blank" rel="noopener">
+    Open Web Browsing Service
+  </a>
+</p>
+  <p class="footer">
+    Heads-up: Uploading files to VirusTotal may share them with VirusTotal and its partners.
+    Only scan files you are allowed to share.
+  </p>
+
+
+
+     
+</body>
+</html>

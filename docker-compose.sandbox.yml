@@ -1,0 +1,61 @@
+services:
+  sandbox-browser:
+    image: jlesage/firefox:latest
+    container_name: sandbox-firefox
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - TZ=Europe/Berlin
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+      - FF_OPEN_URL=https://duckduckgo.com
+      # optional, forces the same folder explicitly:
+      - FF_PREF_DIR=browser.download.dir="/config/Downloads"
+      - FF_PREF_FOLDERLIST=browser.download.folderList=2
+      - FF_PREF_USEDIR=browser.download.useDownloadDir=true
+    volumes:
+      - shared-quarantine:/config
+    # ports:
+      # - "3002:5800"        # noVNC web UI for Firefox
+      # # - "5902:5900"      # (optional) VNC client access
+    networks:
+      - sandbox-network
+    restart: unless-stopped
+
+  flask-app:
+    build: ./flask-server
+    container_name: flask-app
+    env_file:
+      - .env
+    volumes:
+      - shared-quarantine:/app/shared-data
+    ports: 
+    - "5000:5000"
+    networks:
+      - sandbox-network
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - sandbox-browser
+      - flask-app
+    networks:
+      - sandbox-network
+    restart: unless-stopped
+
+networks:
+  sandbox-network:
+
+volumes:
+  firefox-config:
+  shared-quarantine:
+  caddy_data:
+  caddy_config:

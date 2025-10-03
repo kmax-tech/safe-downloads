@@ -1,0 +1,55 @@
+{
+  admin off
+  email you@example.com
+}
+
+# firefox.localhost:80 {
+#   basicauth {
+#     user $2a$14$J42SwWvOiNNB/XYQdVORGelcRPF5SNId1IaLV8KvhBssnf2cobnvy.
+#   }
+#   reverse_proxy sandbox-browser:5800
+# }
+
+# app.localhost:80 {
+#   basicauth {
+#     user $2a$14$J42SwWvOiNNB/XYQdVORGelcRPF5SNId1IaLV8KvhBssnf2cobnvy.
+#   }
+#   reverse_proxy flask-app:5000
+# }
+
+
+
+# Not working because of different routes
+
+:80 {
+  basicauth {
+    user $2a$14$J42SwWvOiNNB/XYQdVORGelcRPF5SNId1IaLV8KvhBssnf2cobnvy.
+  }
+
+  # HTML landing page with clickable links
+  @root path /
+  header @root Content-Type "text/html; charset=utf-8"
+  respond @root "<!doctype html><html><head><meta charset='utf-8'><title>Welcome</title></head><body style='font-family:system-ui;margin:2rem'><h1>Welcome</h1><p>Open:</p><ul><li><a href='/firefox/'>/firefox</a></li><li><a href='/app/'>/app</a></li></ul></body></html>" 200
+
+
+  # Redirect /firefox → /firefox/
+  @firefox_root path /firefox
+  handle @firefox_root {
+    redir /firefox/ 301
+  }
+
+  # Everything under /firefox/* goes to the container on :5800.
+  # handle_path strips the "/firefox" prefix so upstream sees "/", "/websockify", etc.
+  handle_path /firefox/* {
+    reverse_proxy sandbox-browser:5800
+  }
+
+  @app_root path /app
+handle @app_root {
+  redir /app/ 301
+}
+
+  handle /app/* {
+    reverse_proxy flask-app:5000 
+
+}

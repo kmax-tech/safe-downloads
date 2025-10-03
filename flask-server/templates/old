@@ -1,0 +1,4 @@
+  <!-- <div id="toolbar"
+     hx-get="{{ url_for('toolbar') }}"
+     hx-trigger="load, every 3s"
+     hx-swap="outerHTML"></div> -->
