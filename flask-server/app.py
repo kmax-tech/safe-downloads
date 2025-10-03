@@ -395,4 +395,11 @@ print("================")
 if __name__ == "__main__":
     # Ensure base directory exists before starting
     Path(BASE_DIR).mkdir(parents=True, exist_ok=True)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+
+    # Read environment (default to development if not set)
+    env = os.getenv("FLASK_ENV", "development").lower()
+
+    # Enable debug only if not production
+    debug_mode = env != "production"
+
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)

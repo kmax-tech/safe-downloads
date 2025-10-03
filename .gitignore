@@ -6,3 +6,4 @@ __pycache__
 *.pyc 
 shared_quarantine
 shared-quarantine
+transfer.sh
