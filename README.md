@@ -16,6 +16,14 @@ echo 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' > /t
 
 ---
 
+If you want SSL for access, you need to give the host an address.
+Locally, this can be done by adding the following line to /etc/hosts on macOS or Linux on the client machine, which will access the container:
+
+```bash
+IP    app.local
+```
+
+---
 ## ▶️ Starting Containers
 
 Run the sandbox setup with:
@@ -60,3 +68,5 @@ Caddy Password can be created with
 ```bash
 : docker exec -it caddy  caddy hash-password --plaintext "<Password>"
 ```
+
+
